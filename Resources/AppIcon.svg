@@ -1,0 +1,38 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="150" y1="120" x2="880" y2="920" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4E8BFF"/>
+      <stop offset="0.5" stop-color="#5A5CF2"/>
+      <stop offset="1" stop-color="#7A3CE8"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.33" cy="0.24" r="0.9">
+      <stop stop-color="#FFFFFF" stop-opacity="0.30"/>
+      <stop offset="0.55" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="pin" x1="380" y1="250" x2="650" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#E9EEFF"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%">
+      <feDropShadow dx="0" dy="30" stdDeviation="30" flood-color="#141A4D" flood-opacity="0.36"/>
+    </filter>
+  </defs>
+
+  <!-- App tile -->
+  <rect x="96" y="96" width="832" height="832" rx="196" fill="url(#bg)"/>
+  <rect x="96" y="96" width="832" height="832" rx="196" fill="url(#glow)"/>
+
+  <!-- Faint horizon / route curve -->
+  <path d="M168 690C270 612 356 676 442 604C534 526 614 588 706 494C758 442 812 424 858 434"
+        fill="none" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="40" stroke-linecap="round"/>
+
+  <!-- Location pin -->
+  <path d="M512 214C346 214 250 336 250 479C250 665 468 809 497 827C506 833 518 833 527 827C556 809 774 665 774 479C774 336 678 214 512 214Z"
+        fill="url(#pin)" filter="url(#shadow)"/>
+
+  <!-- Inner disc + navigation arrow -->
+  <circle cx="512" cy="472" r="150" fill="none" stroke="#FFFFFF" stroke-opacity="0.30" stroke-width="16"/>
+  <circle cx="512" cy="472" r="112" fill="#5A5CF2"/>
+  <path d="M512 396 L566 536 Q568 543 561 540 L516 521 Q512 519 508 521 L463 540 Q456 543 458 536 Z"
+        fill="#FFFFFF" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round"/>
+</svg>
