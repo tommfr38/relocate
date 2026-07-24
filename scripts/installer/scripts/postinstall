@@ -1,0 +1,77 @@
+#!/bin/bash
+#
+# Relocate postinstall — best-effort setup of the pymobiledevice3 backend used for
+# physical-iPhone sessions.
+#
+# This script runs as root (installer scripts always do), but Homebrew and pipx both
+# refuse to run as root, and installing into root's home would be useless anyway.
+# Every dependency command below therefore runs as the console user via `sudo -u`,
+# through their own login shell so Homebrew's shellenv / pipx's PATH additions (set up
+# in ~/.zprofile) are honored — with well-known install locations added to PATH
+# explicitly as a fallback, since a non-interactive login shell invocation can't be
+# guaranteed to source every dotfile a given setup might use.
+#
+# Nothing here can fail the app install: nothing exits non-zero. A machine with no
+# Homebrew and no Python is left for Relocate's own in-app "iPhone Setup Tutorial" to
+# walk the user through manual setup instead.
+
+set -uo pipefail
+
+LOG="/var/log/relocate-install.log"
+exec >>"$LOG" 2>&1
+echo "=== Relocate postinstall $(date) ==="
+
+CONSOLE_USER=$(stat -f "%Su" /dev/console 2>/dev/null || true)
+if [ -z "$CONSOLE_USER" ] || [ "$CONSOLE_USER" = "root" ]; then
+    echo "No console user detected; skipping pymobiledevice3 setup. The app's Setup guide covers it."
+    exit 0
+fi
+echo "Console user: $CONSOLE_USER"
+
+USER_HOME=$(dscl . -read "/Users/$CONSOLE_USER" NFSHomeDirectory 2>/dev/null | awk '{print $2}')
+[ -z "$USER_HOME" ] && USER_HOME="/Users/$CONSOLE_USER"
+
+USER_SHELL=$(dscl . -read "/Users/$CONSOLE_USER" UserShell 2>/dev/null | awk '{print $2}')
+[ -z "$USER_SHELL" ] && USER_SHELL="/bin/zsh"
+
+run_as_user() {
+    sudo -u "$CONSOLE_USER" -H "$USER_SHELL" -l -c "
+        export PATH=\"/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:\$HOME/.local/bin:\$PATH\"
+        $1
+    "
+}
+
+pymobiledevice3_present() {
+    run_as_user 'command -v pymobiledevice3' >/dev/null 2>&1 \
+        || [ -x "$USER_HOME/.local/bin/pymobiledevice3" ]
+}
+
+if pymobiledevice3_present; then
+    echo "pymobiledevice3 already available for $CONSOLE_USER; nothing to install."
+    exit 0
+fi
+
+if run_as_user 'command -v brew' >/dev/null 2>&1; then
+    echo "Homebrew found; installing pipx and pymobiledevice3 as $CONSOLE_USER"
+    run_as_user 'brew list pipx >/dev/null 2>&1 || brew install pipx'
+    run_as_user 'pipx install pymobiledevice3 || pipx upgrade pymobiledevice3'
+    run_as_user 'pipx ensurepath' || true
+elif run_as_user 'command -v python3' >/dev/null 2>&1; then
+    echo "No Homebrew; python3 found. Installing pipx via pip --user as $CONSOLE_USER"
+    run_as_user 'python3 -m pip install --user --upgrade pipx'
+    run_as_user 'python3 -m pipx install pymobiledevice3'
+    run_as_user 'python3 -m pipx ensurepath' || true
+else
+    echo "Neither Homebrew nor python3 found for $CONSOLE_USER."
+    echo "Skipping automatic dependency install — Relocate's Help > iPhone Setup Tutorial covers manual setup."
+    exit 0
+fi
+
+if pymobiledevice3_present; then
+    echo "pymobiledevice3 installed successfully."
+else
+    echo "WARNING: dependency install did not produce a working pymobiledevice3 binary."
+    echo "Relocate's Help > iPhone Setup Tutorial covers manual setup."
+fi
+
+exit 0

@@ -1,0 +1,9 @@
+#!/bin/bash
+# Quits a running Relocate before the payload is written, so an upgrade install
+# doesn't fail with "resource busy" while the app's binary is open.
+set -uo pipefail
+
+osascript -e 'tell application "Relocate" to quit' >/dev/null 2>&1 || true
+pkill -x Relocate >/dev/null 2>&1 || true
+
+exit 0

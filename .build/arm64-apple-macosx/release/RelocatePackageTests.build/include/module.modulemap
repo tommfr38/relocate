@@ -1,0 +1,3 @@
+module RelocatePackageTests {
+    header "/Users/tomi/Desktop/Code_Projects/relocate/.build/arm64-apple-macosx/release/RelocatePackageTests.build/include/RelocatePackageTests-Swift.h"
+}

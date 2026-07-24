@@ -1,0 +1,29 @@
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  /* Installer.app renders these panes with its own forced text color (matching
+     system light/dark appearance) and ignores author background/color on <body>.
+     A custom background on a child element like <code> is still honored, but its
+     text stays at Installer's forced color — which produced invisible white-on-light
+     text here. Styling <code> with monospace only, no custom colors, sidesteps this:
+     it always inherits the same (correct, legible) color Installer assigns everywhere. */
+  body { font: 13px -apple-system, "Helvetica Neue", sans-serif; margin: 14px 18px; }
+  h1 { font-size: 17px; margin: 0 0 8px; }
+  p { line-height: 1.5; margin: 0 0 10px; }
+  ul { margin: 0 0 10px; padding-left: 18px; line-height: 1.5; }
+  code { font-family: ui-monospace, Menlo, monospace; font-weight: 600; }
+</style>
+</head>
+<body>
+<h1>Welcome to Relocate</h1>
+<p>Relocate is a location-simulation workspace for iOS development and QA — for iOS Simulators, and for physical iPhones connected by cable over Apple's trusted developer channel.</p>
+<p>This installer will:</p>
+<ul>
+  <li>Install <b>Relocate.app</b> into your Applications folder</li>
+  <li>Install the open-source <code>pymobiledevice3</code> command-line backend used for physical-device sessions, if it isn't already on this Mac</li>
+</ul>
+<p>Requirements: macOS 14 or later, and Xcode with the iOS platform installed for physical-device support.</p>
+<p>Use only with devices you own or are authorized to test.</p>
+</body>
+</html>
