@@ -140,6 +140,97 @@
     position: relative;
   }
 
+  .pill-unstable {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: rgba(240, 160, 32, 0.16);
+    color: #f0a020;
+    border: 1px solid rgba(240, 160, 32, 0.35);
+  }
+
+  .btn-unstable {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--panel-border);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .btn-unstable:hover { background: rgba(255, 255, 255, 0.09); border-color: rgba(240,160,32,0.45); }
+
+  /* ---------- Unstable-build warning dialog ---------- */
+  /* Hidden by default in CSS and shown via .is-open, rather than relying on the
+     [hidden] attribute alone — some renderers strip it, which would leave the
+     dialog covering the page on load. */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(4, 6, 12, 0.72);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .modal-backdrop.is-open { display: flex; }
+
+  .modal {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: var(--radius-lg);
+    max-width: 520px;
+    width: 100%;
+    padding: 30px;
+    box-shadow: 0 40px 90px -30px rgba(0,0,0,0.8);
+  }
+  .modal-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(240, 160, 32, 0.14);
+    color: #f0a020;
+    margin-bottom: 16px;
+  }
+  .modal h3 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0 0 10px;
+  }
+  .modal p {
+    color: var(--text-dim);
+    font-size: 14.5px;
+    line-height: 1.6;
+    margin: 0 0 14px;
+  }
+  .modal ul {
+    color: var(--text-dim);
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0 0 18px;
+    padding-left: 20px;
+  }
+  .modal li { margin-bottom: 6px; }
+  .modal code {
+    background: rgba(255,255,255,0.07);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 12.5px;
+    color: var(--text);
+  }
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    margin-top: 22px;
+  }
+
   .pill-soon {
     font-size: 10.5px;
     font-weight: 700;
@@ -545,17 +636,17 @@
   <section class="hero wrap">
     <div class="eyebrow"><span class="dot"></span> Native macOS app</div>
     <h1 class="headline">Simulate any location. <span class="grad grad-block">On any real iPhone.</span></h1>
-    <p class="subhead">Relocate is a location simulator for iOS. Pƒrecise coordinates, timed routes, and GPX playback, over Apple's own trusted developer channel.</p>
+    <p class="subhead">Relocate is a location simulator for iOS. Precise coordinates, timed routes, and GPX playback, over Apple's own trusted developer channel.</p>
 
     <div class="cta-row">
       <a class="btn btn-primary" href="https://github.com/tommfr38/relocate/releases/latest/download/Relocate-Installer.pkg">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
         Download for macOS
       </a>
-      <button class="btn btn-disabled" disabled title="Windows support is on the roadmap — not available yet">
+      <button class="btn btn-unstable" data-unstable-trigger title="Early Windows build — not fully tested">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.5L10.5 4.4V11.3H3V5.5M11.4 4.3L21 3V11.2H11.4V4.3M3 12.3H10.5V19.2L3 18.1V12.3M11.4 12.3H21V20.6L11.4 19.3V12.3Z"/></svg>
         Windows
-        <span class="pill-soon">Coming soon</span>
+        <span class="pill-unstable">Unstable</span>
       </button>
     </div>
     <div class="cta-caption">macOS 14+ · Version 1.0.0 · 1.4 MB</div>
@@ -752,17 +843,41 @@
             <div class="pf-sub">Apple Silicon · macOS 14+ · 1.4 MB</div>
             <a class="btn btn-primary" href="https://github.com/tommfr38/relocate/releases/latest/download/Relocate-Installer.pkg">Download .pkg</a>
           </div>
-          <div class="platform-card disabled">
+          <div class="platform-card">
             <svg class="pf-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.5L10.5 4.4V11.3H3V5.5M11.4 4.3L21 3V11.2H11.4V4.3M3 12.3H10.5V19.2L3 18.1V12.3M11.4 12.3H21V20.6L11.4 19.3V12.3Z"/></svg>
-            <h4>Windows <span class="pill-soon">Coming soon</span></h4>
-            <div class="pf-sub">Not available yet.</div>
-            <button class="btn btn-disabled" disabled>Soon!</button>
+            <h4>Windows <span class="pill-unstable">Unstable</span></h4>
+            <div class="pf-sub">Early build · runs from source · not fully tested</div>
+            <button class="btn btn-unstable" data-unstable-trigger>Read the warning</button>
           </div>
         </div>
       </div>
     </div>
   </section>
 </main>
+
+<div class="modal-backdrop" id="unstable-modal" hidden role="dialog" aria-modal="true" aria-labelledby="unstable-title">
+  <div class="modal">
+    <div class="modal-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+    </div>
+    <h3 id="unstable-title">This Windows version is unstable</h3>
+    <p><strong>It has not been fully tested yet.</strong> The Windows build has never been run on an actual Windows machine — only its device logic has been verified, from macOS.</p>
+    <p>What that means in practice:</p>
+    <ul>
+      <li>There is <strong>no installer or <code>.exe</code> yet</strong> — you download the source and run it with Python.</li>
+      <li>It needs <strong>Apple Mobile Device Support</strong> (the Apple Devices app or iTunes), or Windows cannot see your iPhone at all.</li>
+      <li>Physical iPhones only — there is no iOS Simulator on Windows.</li>
+      <li>Expect rough edges. Use a device you own or are authorized to test.</li>
+    </ul>
+    <p>Setup instructions are in the included <code>README.md</code>.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-unstable-dismiss>Cancel</button>
+      <a class="btn btn-primary" href="downloads/Relocate-Windows-source.zip" download data-unstable-dismiss>
+        I understand — download source
+      </a>
+    </div>
+  </div>
+</div>
 
 <footer>
   <div class="wrap footer-inner">
@@ -775,6 +890,47 @@
     </div>
   </div>
 </footer>
+
+<script>
+  (function () {
+    var modal = document.getElementById('unstable-modal');
+    if (!modal) return;
+    var lastTrigger = null;
+
+    function open(trigger) {
+      lastTrigger = trigger || null;
+      modal.classList.add('is-open');
+      modal.removeAttribute('hidden');
+      document.body.style.overflow = 'hidden';
+      var first = modal.querySelector('[data-unstable-dismiss]');
+      if (first) first.focus();
+    }
+
+    function close() {
+      modal.classList.remove('is-open');
+      modal.setAttribute('hidden', '');
+      document.body.style.overflow = '';
+      if (lastTrigger) lastTrigger.focus();
+    }
+
+    document.querySelectorAll('[data-unstable-trigger]').forEach(function (el) {
+      el.addEventListener('click', function () { open(el); });
+    });
+
+    document.querySelectorAll('[data-unstable-dismiss]').forEach(function (el) {
+      // The download link keeps its default action; it just closes the dialog too.
+      el.addEventListener('click', function () { close(); });
+    });
+
+    modal.addEventListener('click', function (event) {
+      if (event.target === modal) close();
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && modal.classList.contains('is-open')) close();
+    });
+  })();
+</script>
 
 </body>
 </html>

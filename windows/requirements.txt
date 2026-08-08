@@ -1,0 +1,7 @@
+# Runtime dependencies for the Relocate Windows app.
+customtkinter>=5.2
+tkintermapview>=1.29
+pymobiledevice3>=10.0
+
+# Development / test only
+pytest>=8.0

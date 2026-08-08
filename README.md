@@ -67,6 +67,13 @@ to finish signing). An unsigned installer is flagged by Gatekeeper as being from
 unidentified developer; recipients can proceed via right-click → Open in Finder, the
 standard macOS path for unsigned installers.
 
+## Windows
+
+A Windows mirror lives in [`windows/`](windows/) — Python 3 + CustomTkinter, using
+`pymobiledevice3` as an in-process library rather than a CLI. See
+[windows/README.md](windows/README.md) for the rationale, requirements, and build
+instructions. It is physical-device only: Windows has no iOS Simulator.
+
 ## Platform behavior
 
 Simulator sessions use Apple’s documented CoreSimulator location API. Physical sessions use Apple developer services over the trusted device connection. On iOS 17 and later this may require the system’s developer tunnel; current `pymobiledevice3` handles service-provider selection on supported macOS/iOS versions.
