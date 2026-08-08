@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+
+# Swift / Xcode build output
+.build/
+DerivedData/
+dist/
+*.xcuserstate
+.swiftpm/
+
+# Editors
+.vscode/
+.idea/
+
+# Python (windows/)
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
