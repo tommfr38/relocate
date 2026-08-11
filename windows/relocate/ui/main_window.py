@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import logging
 import tkinter as tk
+from pathlib import Path
 from tkinter import filedialog, messagebox
 from typing import Optional
 
 import customtkinter as ctk
+from PIL import Image
 from tkintermapview import TkinterMapView
 from tkintermapview.canvas_button import CanvasButton
 
@@ -33,6 +35,21 @@ DEFAULT_SPEED_KMH = 50
 
 SIDEBAR_WIDTH = 260
 INSPECTOR_WIDTH = 290
+
+
+def _app_icon(size: int) -> Optional[ctk.CTkImage]:
+    """The app icon at `size` px, or None if the bundled resource is unreadable.
+
+    Callers fall back to a text label, so a missing icon degrades rather than raising.
+    """
+    path = Path(__file__).resolve().parent.parent / "resources" / "icon.png"
+    try:
+        image = Image.open(path)
+        image.load()
+    except OSError:
+        log.warning("app icon unavailable at %s", path, exc_info=True)
+        return None
+    return ctk.CTkImage(light_image=image, dark_image=image, size=(size, size))
 
 
 def _theme_map_buttons() -> None:
@@ -135,8 +152,10 @@ class MainWindow(ctk.CTk):
         left = ctk.CTkFrame(bar, fg_color="transparent")
         left.grid(row=0, column=0, padx=(14, 0), pady=11, sticky="w")
 
+        icon = _app_icon(22)
         ctk.CTkButton(
-            left, text="?", width=34, height=34, corner_radius=theme.CORNER,
+            left, text="" if icon else "?", image=icon,
+            width=34, height=34, corner_radius=theme.CORNER,
             fg_color=theme.CARD, hover_color=theme.CARD_HOVER,
             border_width=1, border_color=theme.BORDER,
             text_color=theme.TEXT, font=(theme.FONT, 14, "bold"),
@@ -277,9 +296,18 @@ class MainWindow(ctk.CTk):
             text_color=theme.TEXT, font=(theme.FONT, 13), command=self._apply_search,
         ).grid(row=0, column=1, padx=(0, 14), pady=10)
 
-        self._map = TkinterMapView(container, corner_radius=0)
-        self._map.grid(row=1, column=0, sticky="nsew")
-        self._map.set_tile_server(theme.TILE_SERVER, max_zoom=theme.TILE_MAX_ZOOM)
+        # The basemap is near-black, so a hairline frame keeps the map body from
+        # bleeding into the surrounding chrome: the fill shows through as a 1 px edge.
+        map_frame = ctk.CTkFrame(container, corner_radius=0, fg_color=theme.MAP_BORDER)
+        map_frame.grid(row=1, column=0, sticky="nsew")
+        map_frame.grid_rowconfigure(0, weight=1)
+        map_frame.grid_columnconfigure(0, weight=1)
+
+        self._map = TkinterMapView(map_frame, corner_radius=0)
+        self._map.grid(row=0, column=0, sticky="nsew", padx=1, pady=1)
+        self._map.set_tile_server(
+            theme.TILE_SERVER, tile_size=theme.TILE_SIZE, max_zoom=theme.TILE_MAX_ZOOM
+        )
         self._map.set_position(self._selected.latitude, self._selected.longitude)
         self._map.set_zoom(12)
         self._map.add_left_click_map_command(self._on_map_clicked)

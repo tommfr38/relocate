@@ -27,8 +27,11 @@ SolidCompression=yes
 WizardStyle=modern
 ArchitecturesInstallIn64BitMode=x64compatible
 ArchitecturesAllowed=x64compatible
-; Per-machine install needs elevation; switch to lowest + {autopf}=userpf for per-user.
-PrivilegesRequired=admin
+; Install per-user by default so no elevation is required: {autopf} then resolves to
+; {localappdata}\Programs, {group} and {autodesktop} to the user's own shortcuts.
+; Pass /ALLUSERS (elevated) to install per-machine into Program Files instead.
+PrivilegesRequired=lowest
+PrivilegesRequiredOverridesAllowed=commandline
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -52,11 +55,14 @@ Filename: "{app}\{#AppExeName}"; Description: "Launch {#AppName}"; Flags: nowait
   so warn rather than fail silently later. }
 function AppleMobileDeviceSupportPresent(): Boolean;
 begin
+  { Deliberately not a DirExists check on "Mobile Device Support": iCloud leaves an
+    empty Drivers/NetDrivers skeleton there without ever installing the service, so
+    the directory is present on machines where usbmux cannot see a device at all.
+    Look for the service itself. }
   Result :=
-    RegKeyExists(HKLM, 'SOFTWARE\Apple Inc.\Apple Mobile Device Support') or
-    RegKeyExists(HKLM, 'SOFTWARE\WOW6432Node\Apple Inc.\Apple Mobile Device Support') or
-    DirExists(ExpandConstant('{commonpf}\Common Files\Apple\Mobile Device Support')) or
-    DirExists(ExpandConstant('{commonpf32}\Common Files\Apple\Mobile Device Support'));
+    RegKeyExists(HKLM, 'SYSTEM\CurrentControlSet\Services\Apple Mobile Device Service') or
+    FileExists(ExpandConstant('{commoncf}\Apple\Mobile Device Support\AppleMobileDeviceService.exe')) or
+    FileExists(ExpandConstant('{commoncf32}\Apple\Mobile Device Support\AppleMobileDeviceService.exe'));
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
@@ -65,10 +71,10 @@ begin
   begin
     if not AppleMobileDeviceSupportPresent() then
       MsgBox(
-        'Apple Mobile Device Support was not detected.' #13#13
-        'Relocate needs it to see an iPhone over USB. Install the Apple Devices app '
-        'from the Microsoft Store (or iTunes from apple.com), then reconnect your iPhone.' #13#13
-        'Relocate is installed and will still open — see Help > iPhone Setup Tutorial.',
+        'Apple Mobile Device Support was not detected.' #13#13 +
+        'Relocate needs it to see an iPhone over USB. Install the Apple Devices app ' +
+        'from the Microsoft Store (or iTunes from apple.com), then reconnect your iPhone.' #13#13 +
+        'Relocate is installed and will still open - see Help > iPhone Setup Tutorial.',
         mbInformation, MB_OK);
   end;
 end;

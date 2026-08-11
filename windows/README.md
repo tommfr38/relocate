@@ -107,12 +107,28 @@ OS-independent Python):
 - The UI runs and renders: dark map tiles, markers, saved-place cards, readiness
   checks, and correct enabled/disabled button states.
 
-Not verified — needs an actual Windows machine:
+Verified on Windows 11 (x64), against an iPhone 17 Pro Max on iOS 26.6 over USB:
 
-- Running under Windows itself (usbmux via Apple Mobile Device Service rather than
-  macOS's built-in `usbmuxd`).
-- The PyInstaller build and the Inno Setup installer.
-- Native Windows theming (Segoe UI, title-bar behaviour).
+- The PyInstaller build and the Inno Setup installer both produce working output, and
+  the installed app launches and renders (map tiles, markers, saved places, native
+  Segoe UI chrome).
+- usbmux via Apple Mobile Device Service resolves the device, its model and iOS
+  version, and the readiness panel reports the service reachable.
+
+Not verified on Windows yet:
+
+- Setting a location and route playback against a connected device (the macOS runs
+  above cover the same backend code, but not on this transport).
+
+Build notes learned the hard way:
+
+- Build on Python 3.10-3.12. `pymobiledevice3` pulls in `lzfse` and `pylzss`, C
+  extensions with no wheels past 3.12, so a newer interpreter tries to compile them and
+  fails without MSVC. `build.ps1` selects a supported interpreter for this reason.
+- Apple Mobile Device Support must really be installed (the Apple Devices app or
+  iTunes). An `iCloud`-only machine leaves an empty `Common Files\Apple\Mobile Device
+  Support\{Drivers,NetDrivers}` skeleton with no service behind it, which looks like a
+  working install but cannot see a device.
 
 ## Scope
 
